@@ -1,0 +1,90 @@
+/* Main background */
+.stApp {
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+    color: #e0e0e0;
+}
+
+/* Title */
+h1 {
+    background: linear-gradient(90deg, #00d2ff, #7b2ff7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+}
+
+/* Subheaders */
+h2, h3 {
+    color: #00d2ff !important;
+}
+
+/* Cards / containers */
+.stChatMessage {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(0, 210, 255, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 10px !important;
+}
+
+/* Buttons */
+.stButton > button {
+    background: linear-gradient(90deg, #00d2ff, #7b2ff7) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 20px rgba(0, 210, 255, 0.4) !important;
+}
+
+/* Input fields */
+.stTextInput > div > div > input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(0, 210, 255, 0.3) !important;
+    border-radius: 8px !important;
+    color: white !important;
+}
+
+/* Sidebar */
+.css-1d391kg, [data-testid="stSidebar"] {
+    background: rgba(15, 15, 30, 0.95) !important;
+    border-right: 1px solid rgba(0, 210, 255, 0.2) !important;
+}
+
+/* Radio buttons */
+.stRadio > div {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 10px !important;
+    padding: 10px !important;
+}
+
+/* Expanders */
+.streamlit-expanderHeader {
+    background: rgba(0, 210, 255, 0.1) !important;
+    border-radius: 8px !important;
+}
+
+/* Success/info/warning messages */
+.stSuccess {
+    background: rgba(0, 255, 100, 0.1) !important;
+    border: 1px solid rgba(0, 255, 100, 0.3) !important;
+}
+
+/* Chat input */
+.stChatInput > div {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(0, 210, 255, 0.3) !important;
+    border-radius: 12px !important;
+}
+
+/* Metrics */
+[data-testid="stMetric"] {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(0, 210, 255, 0.2) !important;
+    border-radius: 10px !important;
+    padding: 15px !important;
+}

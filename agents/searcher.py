@@ -16,37 +16,49 @@ def create_searcher_agent():
     )
 
     def search_and_summarize(topic):
-        # Step 1: Generate 3 different search queries from the topic
-        query_prompt = ChatPromptTemplate.from_template("""
-You are a research expert. Generate 3 different search queries for the topic below.
-Each query should focus on a different angle:
-- Query 1: General overview
-- Query 2: Latest news/developments
-- Query 3: Data, statistics, or examples
+
+        # --- REACT STEP 1: REASON about what to search ---
+        react_prompt = ChatPromptTemplate.from_template("""
+You are a research agent using the ReAct framework.
+
+THOUGHT: What do I need to find about this topic?
+Analyze the topic and think about:
+- What is the core question?
+- What angles need to be covered?
+- What specific data would be most useful?
+
+ACTION PLAN: Generate exactly 3 search queries:
+- Query 1: General overview angle
+- Query 2: Latest news/developments angle  
+- Query 3: Data, statistics, examples angle
 
 Topic: {topic}
 
-Return ONLY the 3 queries, one per line, no numbering or extra text.
+Return ONLY 3 queries, one per line, no numbering or labels.
 """)
-        query_chain = query_prompt | llm | StrOutputParser()
+        query_chain = react_prompt | llm | StrOutputParser()
         queries_text = query_chain.invoke({"topic": topic})
         queries = [q.strip() for q in queries_text.strip().split("\n") if q.strip()][:3]
 
-        print(f"🔍 Running {len(queries)} parallel queries:")
-        for q in queries:
-            print(f"   - {q}")
+        print(f"\n🧠 ReAct THOUGHT: Analyzing topic: {topic}")
+        print(f"📋 ReAct ACTION: Running {len(queries)} queries:")
+        for i, q in enumerate(queries, 1):
+            print(f"   Query {i}: {q}")
 
-        # Step 2: Run all queries and collect results
+        # --- REACT STEP 2: ACT — run all queries ---
         all_results = []
         for query in queries:
             try:
+                print(f"🔍 Searching: {query}")
                 results = search_tool.invoke(query)
                 for r in results:
-                    all_results.append(f"Query: {query}\nSource: {r['url']}\n{r['content']}")
+                    all_results.append(
+                        f"Query: {query}\nSource: {r['url']}\nContent: {r['content']}"
+                    )
             except Exception as e:
                 print(f"⚠️ Query failed: {query} — {e}")
 
-        # Step 3: Deduplicate results
+        # --- REACT STEP 3: OBSERVE — review results ---
         seen = set()
         unique_results = []
         for r in all_results:
@@ -54,22 +66,38 @@ Return ONLY the 3 queries, one per line, no numbering or extra text.
                 seen.add(r)
                 unique_results.append(r)
 
+        print(f"👁️ ReAct OBSERVATION: Got {len(unique_results)} unique results")
+
         combined = "\n\n---\n\n".join(unique_results)
 
-        # Step 4: Summarize all findings
+        # --- REACT STEP 4: REASON again — summarize ---
         summary_prompt = ChatPromptTemplate.from_template("""
-You are a research assistant. Based on the following web search results from multiple queries,
-provide a comprehensive and well-structured summary about: {topic}
+You are a research assistant completing a ReAct loop.
 
-Search Results:
+THOUGHT: I have gathered web search results. Now I need to:
+1. Identify the most important findings
+2. Check for contradictions between sources
+3. Organize by relevance to the original topic
+4. Synthesize into a coherent summary
+
+OBSERVATION (search results):
 {results}
 
-Provide a detailed summary covering all angles found:
+ACTION: Write a comprehensive research summary about: {topic}
+
+Cover:
+- Main findings and key facts
+- Latest developments
+- Important statistics or data points
+- Different perspectives if any
+
+Provide detailed, well-organized findings:
 """)
         chain = summary_prompt | llm | StrOutputParser()
         summary = chain.invoke({"topic": topic, "results": combined})
 
+        print(f"✅ ReAct COMPLETE: Summary generated")
         return summary
 
-    print("✅ Multi-query Searcher agent ready")
+    print("✅ ReAct Searcher agent ready")
     return search_and_summarize
